@@ -10,7 +10,7 @@ async function transport(url, options={}, timeoutMs=15000){
  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeoutMs);
  try{return await fetch(url,{...options,signal:controller.signal})}finally{clearTimeout(timer)}
 }
-function errorKind(error){const message=String(error?.message||'');if(error?.name==='AbortError'||error?.name==='TimeoutError')return 'TIMEOUT';if(/redirect/i.test(message))return 'REDIRECT';if(/dns|resolve|host/i.test(message))return 'DNS_OR_HOST';if(/tls|ssl|certificate/i.test(message))return 'TLS';return 'CONNECTION_OR_RUNTIME'}
+function errorKind(error){const message=String(error?.message||'');if(error?.name==='AbortError'||error?.name==='TimeoutError')return 'TIMEOUT';if(/not implemented|unsupported/i.test(message)&&/redirect/i.test(message))return 'RUNTIME_REDIRECT_MODE';if(/redirect/i.test(message))return 'REDIRECT';if(/dns|resolve|host/i.test(message))return 'DNS_OR_HOST';if(/tls|ssl|certificate/i.test(message))return 'TLS';return 'CONNECTION_OR_RUNTIME'}
 async function probe(host){
  const start=Date.now();
  try{
@@ -44,7 +44,8 @@ export async function onRequest({request,env}){
  const payload=new URLSearchParams({token:env.WEBVORK_TOKEN.trim(),offer_id:String(OFFERS[data.product]),name:data.name.trim(),phone:data.phone.trim(),country:'IT',lang:'it',ip});
  for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'])if(typeof data.utm?.[key]==='string')payload.set(key,data.utm[key].slice(0,200));
  try{
-  const response=await transport('https://api.webvork.com/v1/new-lead',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:payload,redirect:'error'});
+  const response=await transport('https://api.webvork.com/v1/new-lead',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:payload,redirect:'manual'});
+  if(response.status>=300&&response.status<400){if(response.body)await response.body.cancel();return json({ok:false,code:'UPSTREAM_REDIRECT',message:'Il servizio ha richiesto un reindirizzamento. La ricezione non è confermata; non ripetere subito l’invio.'},502)}
   let result;try{result=await response.json()}catch{return json({ok:false,message:'Ricezione non confermata. Evita invii ripetuti e riprova più tardi.'},502)}
   // Contratto documentato Webvork: status=ok e guid dell'ordine.
   if(response.ok&&result?.status==='ok'&&typeof result.guid==='string'&&/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(result.guid))return json({ok:true});
