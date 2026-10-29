@@ -18,3 +18,6 @@
 /* Respiro tra il catalogo Recensioni e il footer, indipendente dai testi. */
 .catalog-page{padding-bottom:80px}
 @media(max-width:740px){.catalog-page{padding-bottom:56px}}
+
+/* Telefono italiano con prefisso fisso. */
+.phone-field{display:flex;align-items:stretch;width:100%;border:1px solid #bac8bc;border-radius:4px;overflow:hidden;background:#fff}.phone-prefix{display:flex;align-items:center;justify-content:center;padding:11px 13px;background:var(--cream);border-right:1px solid var(--line);font-size:15px;font-weight:600;flex:0 0 auto}.ordermodule .phone-field input:not([type=checkbox]){width:100%;min-width:0;border:0;border-radius:0;padding:12px;font-size:16px}.phone-field:focus-within{outline:3px solid #a4b869;outline-offset:3px}.ordermodule .phone-field input:focus-visible{outline:none}.phone-help{display:block;font-size:10px;line-height:1.5;color:var(--muted);margin-top:6px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
