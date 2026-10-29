@@ -29,3 +29,7 @@
  main.listing-footer-space>.wrap>.section:last-child{padding-bottom:0}
  .review-related.section{padding-bottom:80px}
 }
+
+/* Separazione tra FAQ e prodotti correlati nelle recensioni. */
+.wrap.reviewmain{padding-bottom:96px}
+@media(max-width:740px){.wrap.reviewmain{padding-bottom:80px}.review-related.section{padding-top:64px}}
