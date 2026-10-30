@@ -33,3 +33,11 @@
 /* Separazione tra FAQ e prodotti correlati nelle recensioni. */
 .wrap.reviewmain{padding-bottom:96px}
 @media(max-width:740px){.wrap.reviewmain{padding-bottom:80px}.review-related.section{padding-top:64px}}
+
+/* Un solo V inclinato compone il nome Vela. */
+.brand{display:inline-flex;flex-direction:column;align-items:flex-start;gap:4px;flex-shrink:0}
+.brand-wordmark{display:inline-flex;align-items:baseline;line-height:1;white-space:nowrap}
+.brand .brandmark{display:inline-block;font:43px/1 Georgia,'Times New Roman',serif;transform:rotate(-16deg);transform-origin:50% 65%;margin-right:-4px;color:#47724b}
+.brand strong{font:34px/1 Georgia,'Times New Roman',serif;letter-spacing:-.055em}
+.brand small{margin-top:0;font-size:9px;letter-spacing:.2em;line-height:1.2}
+@media(max-width:740px){.brand .brandmark{font-size:36px;margin-right:-3px}.brand strong{font-size:30px}.brand small{font-size:8px}}
