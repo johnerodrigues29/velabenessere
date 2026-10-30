@@ -41,3 +41,9 @@
 .brand strong{font:34px/1 Georgia,'Times New Roman',serif;letter-spacing:-.055em}
 .brand small{margin-top:0;font-size:9px;letter-spacing:.2em;line-height:1.2}
 @media(max-width:740px){.brand .brandmark{font-size:36px;margin-right:-3px}.brand strong{font-size:30px}.brand small{font-size:8px}}
+
+/* Header visibile tornando verso l'alto; non altera lo spazio del documento. */
+header{transition:transform .22s ease}
+header.site-header-hidden{transform:translateY(calc(-100% - 2px))}
+body.menu-open header{transform:none}
+@media(prefers-reduced-motion:reduce){header{transition:none}}

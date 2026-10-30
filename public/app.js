@@ -5,7 +5,7 @@ function setMenu(open,restoreFocus=true){
  if(!navigation||!menu)return;open=!!open&&mobileView.matches;if(open===menuIsOpen)return;
  menuIsOpen=open;navigation.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));document.body.classList.toggle('menu-open',open);
  document.querySelector('main').inert=open;document.querySelector('footer').inert=open;
- if(open){menuScroll=window.scrollY;document.body.style.position='fixed';document.body.style.top='-'+menuScroll+'px';document.body.style.width='100%';navigation.setAttribute('role','dialog');navigation.setAttribute('aria-modal','true');navigation.setAttribute('aria-label','Menu principale');menuClose.focus()}
+ if(open){document.querySelector('header')?.classList.remove('site-header-hidden');menuScroll=window.scrollY;document.body.style.position='fixed';document.body.style.top='-'+menuScroll+'px';document.body.style.width='100%';navigation.setAttribute('role','dialog');navigation.setAttribute('aria-modal','true');navigation.setAttribute('aria-label','Menu principale');menuClose.focus()}
  else{document.body.style.position='';document.body.style.top='';document.body.style.width='';navigation.removeAttribute('role');navigation.removeAttribute('aria-modal');navigation.setAttribute('aria-label','Navigazione principale');window.scrollTo({top:menuScroll,behavior:'instant'});if(restoreFocus)menu.focus()}
 }
 menu?.addEventListener('click',()=>setMenu(!menuIsOpen));menuClose?.addEventListener('click',()=>setMenu(false));navigation?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false,false)));
@@ -27,3 +27,21 @@ form?.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportVali
 
 // La funzione rivela soltanto se il servizio è attivo, mai il token.
 (async()=>{if(!form)return;const endpoint=window.VELA_CONFIG?.leadEndpoint;if(!endpoint)return;try{const response=await fetch(endpoint,{cache:'no-store'});if(!response.ok)return;const state=await response.json();if(state.enabled===true){const notice=form.closest('.ordermodule')?.querySelector('.policy-note');if(notice)notice.hidden=true;form.querySelector('button[type=submit]').textContent='Richiedi un ricontatto ↗';}}catch{/* Mantiene l'avviso di servizio non attivo. */}})();
+
+// Il menu rimane accessibile mentre il contenuto ha più spazio durante la lettura.
+(()=>{
+ const siteHeader=document.querySelector('header');if(!siteHeader)return;
+ let previousY=Math.max(0,window.scrollY),scheduled=false;
+ const show=()=>siteHeader.classList.remove('site-header-hidden');
+ const update=()=>{
+  scheduled=false;const y=Math.max(0,window.scrollY);
+  if(menuIsOpen||y<80){show();previousY=y;return}
+  const focused=document.activeElement;
+  if(siteHeader.contains(focused)&&focused?.matches(':focus-visible')){show();previousY=y;return}
+  const delta=y-previousY;if(Math.abs(delta)<8)return;
+  siteHeader.classList.toggle('site-header-hidden',delta>0);previousY=y;
+ };
+ window.addEventListener('scroll',()=>{if(!scheduled){scheduled=true;requestAnimationFrame(update)}},{passive:true});
+ siteHeader.addEventListener('focusin',show);
+ window.addEventListener('pageshow',()=>{previousY=Math.max(0,window.scrollY);show()});
+})();
