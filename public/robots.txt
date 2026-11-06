@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Sitemap: https://seu-dominio.example/sitemap.xml
+
+Sitemap: https://velabenessere.it/sitemap.xml
