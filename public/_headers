@@ -10,3 +10,9 @@
   Cache-Control: no-cache
 /immagini/*
   Cache-Control: public, max-age=86400
+
+/privacy/
+  X-Robots-Tag: noindex, follow
+
+/contatti/
+  X-Robots-Tag: noindex, follow
