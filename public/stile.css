@@ -42,6 +42,12 @@
 .brand small{margin-top:0;font-size:9px;letter-spacing:.2em;line-height:1.2}
 @media(max-width:740px){.brand .brandmark{font-size:36px;margin-right:-3px}.brand strong{font-size:30px}.brand small{font-size:8px}}
 
+/* Faixa superior em uma linha; fonte proporcional à largura dos celulares. */
+@media(max-width:740px){
+ .topline{white-space:nowrap;font-size:clamp(6px,2.5vw,9px);letter-spacing:.02em;padding-inline:8px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+ .topline span{margin-inline:3px}
+}
+
 /* Header visibile tornando verso l'alto; non altera lo spazio del documento. */
 header{transition:transform .22s ease}
 header.site-header-hidden{transform:translateY(calc(-100% - 2px))}
