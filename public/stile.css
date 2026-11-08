@@ -53,3 +53,6 @@ header{transition:transform .22s ease}
 header.site-header-hidden{transform:translateY(calc(-100% - 2px))}
 body.menu-open header{transform:none}
 @media(prefers-reduced-motion:reduce){header{transition:none}}
+
+/* A marca do rodapé mantém sua aparência ao passar o mouse. */
+.footer a.brand:hover{text-decoration:none}
