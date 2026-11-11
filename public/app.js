@@ -23,7 +23,54 @@ if(stickyOrder&&orderSection){
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(updateSticky,{threshold:[0,0.01,0.25,0.5,0.75,1]});observer.observe(orderSection)}
  window.addEventListener('scroll',updateSticky,{passive:true});window.addEventListener('resize',updateSticky);mobileView.addEventListener('change',updateSticky);
 }
-form?.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;const button=form.querySelector('button[type=submit]'),status=document.querySelector('#formstatus');button.disabled=true;const old=button.textContent;button.textContent='Invio in corso…';status.textContent='';try{const data=Object.fromEntries(new FormData(form));data.phone='+39'+normalizeItalianPhone(data.phone);data.product=form.dataset.product;data.consent=form.elements.consent.checked;const utm={};for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){const v=new URLSearchParams(location.search).get(key);if(v)utm[key]=v.slice(0,200)}data.utm=utm;const endpoint=window.VELA_CONFIG?.leadEndpoint;if(!endpoint)throw new Error('Il servizio di ricontatto non è ancora attivo. Nessun dato è stato inviato.');const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.message||'Invio non riuscito. Riprova più tardi.');form.reset();modal.showModal()}catch(err){status.textContent=err.message||'Connessione non disponibile. I dati compilati sono stati conservati.'}finally{button.disabled=false;button.textContent=old}});
+
+// Riutilizza il modulo della scheda anche nella finestra desktop.
+const leadTrigger = document.querySelector('[data-open-lead]');
+let leadDialog;
+
+if (leadTrigger && orderSection && form && typeof HTMLDialogElement !== 'undefined' &&
+    typeof HTMLDialogElement.prototype.showModal === 'function') {
+ const formPosition = document.createComment('Posizione originale del modulo');
+ orderSection.before(formPosition);
+
+ leadDialog = document.createElement('dialog');
+ leadDialog.className = 'lead-dialog';
+ leadDialog.setAttribute('aria-label', 'Richiesta di ricontatto');
+ const closeLead = document.createElement('button');
+ closeLead.type = 'button';
+ closeLead.className = 'lead-dialog-close';
+ closeLead.textContent = 'Chiudi';
+ leadDialog.append(closeLead);
+ document.body.append(leadDialog);
+
+ function restoreOrderSection() {
+  if (orderSection.parentNode === leadDialog) formPosition.after(orderSection);
+ }
+
+ leadTrigger.addEventListener('click', event => {
+  if (mobileView.matches || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  leadDialog.append(orderSection);
+  try {
+   leadDialog.showModal();
+  } catch {
+   restoreOrderSection();
+   return;
+  }
+  event.preventDefault();
+  form.querySelector('#name')?.focus({preventScroll:true});
+ });
+ closeLead.addEventListener('click', () => leadDialog.close());
+ leadDialog.addEventListener('close', () => {
+  if (leadDialog.open) return;
+  restoreOrderSection();
+  if (!modal?.open) leadTrigger.focus({preventScroll:true});
+ });
+ mobileView.addEventListener('change', () => {
+  if (mobileView.matches && leadDialog.open) leadDialog.close();
+ });
+}
+
+form?.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;const button=form.querySelector('button[type=submit]'),status=document.querySelector('#formstatus');button.disabled=true;const old=button.textContent;button.textContent='Invio in corso…';status.textContent='';try{const data=Object.fromEntries(new FormData(form));data.phone='+39'+normalizeItalianPhone(data.phone);data.product=form.dataset.product;data.consent=form.elements.consent.checked;const utm={};for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){const v=new URLSearchParams(location.search).get(key);if(v)utm[key]=v.slice(0,200)}data.utm=utm;const endpoint=window.VELA_CONFIG?.leadEndpoint;if(!endpoint)throw new Error('Il servizio di ricontatto non è ancora attivo. Nessun dato è stato inviato.');const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.message||'Invio non riuscito. Riprova più tardi.');form.reset();if(leadDialog?.open)leadDialog.close();modal.showModal()}catch(err){status.textContent=err.message||'Connessione non disponibile. I dati compilati sono stati conservati.'}finally{button.disabled=false;button.textContent=old}});
 
 // La funzione rivela soltanto se il servizio è attivo, mai il token.
 (async()=>{if(!form)return;const endpoint=window.VELA_CONFIG?.leadEndpoint;if(!endpoint)return;try{const response=await fetch(endpoint,{cache:'no-store'});if(!response.ok)return;const state=await response.json();if(state.enabled===true){const notice=form.closest('.ordermodule')?.querySelector('.policy-note');if(notice)notice.hidden=true;form.querySelector('button[type=submit]').textContent='Richiedi un ricontatto ↗';}}catch{/* Mantiene l'avviso di servizio non attivo. */}})();

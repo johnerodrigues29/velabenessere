@@ -56,3 +56,9 @@ body.menu-open header{transform:none}
 
 /* A marca do rodapé mantém sua aparência ao passar o mouse. */
 .footer a.brand:hover{text-decoration:none}
+
+/* Il pulsante nell’articolo usa lo stile dei pulsanti verdi del sito. */
+.prose a.btn { color: #fff; text-decoration: none; }
+.lead-dialog { width: min(480px, calc(100% - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 24px; overflow: auto; }
+.lead-dialog .ordermodule { position: static; border: 0; padding: 0; }
+.lead-dialog-close { display: block; margin: 0 0 12px auto; padding: 8px 12px; border: 1px solid var(--line); border-radius: 5px; background: #fff; color: var(--green); cursor: pointer; }
