@@ -1,6 +1,6 @@
 // Executado exclusivamente no servidor Cloudflare Pages Functions.
 // O token nunca é incluído no frontend e não deve ser escrito neste arquivo.
-const OFFERS=Object.freeze({'testosteron-boost':400,'curcuma-complex':357,cystobact:281,'artroflex-active':208,'artroflex-cream':339,'parazax-complex':20,erectrum:442,'ketoslim-cream':583,'reprostat-cream':447,'venarix-caps':615,'venarix-cream':609});
+const OFFERS=Object.freeze({'testosteron-boost':400,'curcuma-complex':357,cystobact:281,'artroflex-active':208,'artroflex-cream':339,'osteonova':411,'parazax-complex':20,erectrum:442,'ketoslim-cream':583,'reprostat-cream':447,'venarix-caps':615,'venarix-cream':609});
 const json=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 const active=env=>env.LEADS_ENABLED==='true'&&typeof env.WEBVORK_TOKEN==='string'&&!!env.WEBVORK_TOKEN.trim();
 async function readBody(request){const reader=request.body?.getReader();if(!reader)throw new Error('empty');const chunks=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>8192){await reader.cancel();throw new Error('large')}chunks.push(value)}const all=new Uint8Array(size);let offset=0;for(const c of chunks){all.set(c,offset);offset+=c.length}return JSON.parse(new TextDecoder().decode(all))}
