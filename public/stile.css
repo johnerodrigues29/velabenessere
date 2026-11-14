@@ -62,3 +62,69 @@ body.menu-open header{transform:none}
 .lead-dialog { width: min(480px, calc(100% - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 24px; overflow: auto; }
 .lead-dialog .ordermodule { position: static; border: 0; padding: 0; }
 .lead-dialog-close { display: block; margin: 0 0 12px auto; padding: 8px 12px; border: 1px solid var(--line); border-radius: 5px; background: #fff; color: var(--green); cursor: pointer; }
+
+/* Prodotti del catalogo ProLon nella recensione del kit 5-Day. */
+.prolon-review .prolon-promo {
+  margin: 0 0 20px;
+}
+.prolon-product-shelf {
+  position: sticky;
+  top: 110px;
+  max-height: calc(100dvh - 130px);
+  overflow-y: auto;
+  display: grid;
+  gap: 12px;
+}
+.prolon-product-shelf h2 {
+  margin: 0;
+  font-size: 25px;
+}
+.prolon-product {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  padding: 13px;
+}
+.prolon-product img {
+  display: block;
+  width: 100%;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.prolon-product h3 {
+  font-size: 18px;
+  margin: 0 0 3px;
+}
+.prolon-product p {
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+.prolon-product .price {
+  font-size: 22px;
+  margin: 7px 0 0;
+}
+.prolon-product .prolon-from {
+  font: 12px system-ui, sans-serif;
+}
+.prolon-product .btn {
+  grid-column: 1 / -1;
+  gap: 8px;
+  padding: 10px 12px;
+  min-height: 44px;
+}
+@media (max-width: 740px) {
+  .reviewmain.prolon-review-main .prolon-product-aside {
+    order: 0;
+  }
+  .prolon-product-shelf {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
