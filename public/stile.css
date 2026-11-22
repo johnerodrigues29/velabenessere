@@ -128,3 +128,7 @@ body.menu-open header{transform:none}
     overflow: visible;
   }
 }
+
+.prose > .facts {
+  margin-block-end: 1.5rem;
+}
